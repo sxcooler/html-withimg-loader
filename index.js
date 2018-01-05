@@ -7,21 +7,21 @@ module.exports = function(fileContent) {
 
 	var query = loaderUtils.parseQuery(this.query);
 	fileContent = query.min === false?fileContent:fileContent.replace(/\n/g, '');
-	
+
 	if(/module\.exports\s?=/.test(fileContent)) {
 		fileContent = fileContent.replace(/module\.exports\s?=\s?/, '');
 	}
 	else fileContent = JSON.stringify(fileContent);
 
 	if(query.deep !== false) fileContent = loadDeep(fileContent, this.query);
-	
+
 	return "module.exports = "+replaceSrc(fileContent, query.exclude);
 };
 
 
 function replaceSrc(fileContent, exclude) {
-    fileContent = fileContent.replace(/((\<img[^\<\>]*? src)|(\<link[^\<\>]*? href))[\s]*=[\s]*\\?[\"\']?[^\'\"\<\>\+]+?\\?[\'\"][^\<\>]*?[/]?\>/ig, function(str){
-    
+    fileContent = fileContent.replace(/((\<img[^\<\>]*? src)|(\<audio[^\<\>]*? src)|(\<link[^\<\>]*? href))[\s]*=[\s]*\\?[\"\']?[^\'\"\<\>\+]+?\\?[\'\"][^\<\>]*?[/]?\>/ig, function(str){
+
     var reg = /\s+((src)|(href))[\s]*=[\s]*\\?[\'\"][^\"\']+\\?[\'\"]/i;
         var regResult = reg.exec(str);
 
@@ -30,7 +30,7 @@ function replaceSrc(fileContent, exclude) {
         var imgUrl = regResult[0].replace(/\w+\s*=\s*/, '').replace(/[\\\'\"]/g, '');
         if(!imgUrl) return str; // 避免空src引起编译失败
         if(/^(http(s?):)?\/\//.test(imgUrl)) return str; // 绝对路径的图片不处理
-        if(!/\.(jpg|jpeg|png|gif|svg|webp)/i.test(imgUrl)) return str; // 非静态图片不处理
+        if(!/\.(jpg|jpeg|png|gif|svg|webp|ogg|mp3|wav)/i.test(imgUrl)) return str; // 非静态图片不处理
         if(exclude && imgUrl.indexOf(exclude) != -1) return str; // 不处理被排除的
     	imgUrl = imgUrl.replace(/^\s*/g, ''); // 去掉左边空格
 

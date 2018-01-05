@@ -78,6 +78,10 @@ github地址：https://github.com/wzsxyz/html-withimg-loader
 
 ## 更新记录：
 
+### 0.1.16
+
+* 增加了对ogg、mp3和wav格式<audio>标签的支持
+
 ### 0.1.15
 
 * 增加了对link标签href图片路径的处理
